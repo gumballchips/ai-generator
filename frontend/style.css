@@ -1,0 +1,19 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 50px;
+  background-color: #121212;
+  color: #fff;
+}
+input, select, button {
+  padding: 10px;
+  margin: 10px;
+  border-radius: 8px;
+  border: none;
+}
+img, video {
+  max-width: 80%;
+  margin-top: 20px;
+  border: 2px solid #fff;
+  border-radius: 12px;
+}
