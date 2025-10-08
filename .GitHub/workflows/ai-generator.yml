@@ -1,19 +1,35 @@
-name: Generate AI Content
+name: AI Generator Workflow
 
-on: [push]
+# Trigger the workflow when pushing to main branch
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # allows manual trigger
 
 jobs:
-  build:
+  run-ai-generator:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js
+      # 1️⃣ Checkout your repo
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # 2️⃣ Set up Node.js environment
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
+
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm install
-      - name: Run AI script
+        working-directory: backend
+
+      # 4️⃣ Run your backend script safely
+      - name: Run AI generator
+        working-directory: backend
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: node backend/server.js
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # secure injection
+        run: node server.js
