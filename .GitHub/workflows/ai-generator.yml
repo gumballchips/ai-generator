@@ -1,35 +1,41 @@
 name: AI Generator Workflow
 
-# Trigger the workflow when pushing to main branch
 on:
   push:
     branches:
       - main
-  workflow_dispatch: # allows manual trigger
+  workflow_dispatch:
 
 jobs:
   run-ai-generator:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout your repo
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      # 2️⃣ Set up Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm install
         working-directory: backend
 
-      # 4️⃣ Run your backend script safely
-      - name: Run AI generator
+      - name: Run AI generator (actual test)
         working-directory: backend
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # secure injection
-        run: node server.js
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          node -e "
+          import fetch from 'node-fetch';
+          const apiKey = process.env.OPENAI_API_KEY;
+          const response = await fetch('https://your-ai-image-api.com/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            body: JSON.stringify({ prompt: 'skibidi veiny ahh rizz test', type: 'image' })
+          });
+          const data = await response.json();
+          console.log('Test Generation Result:', data);
+          "
