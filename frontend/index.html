@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Generator: Image or Video</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>AI Generator: Image or Video</h1>
+  <input type="text" id="prompt" placeholder="Enter your prompt" />
+  <select id="type">
+    <option value="image">Image</option>
+    <option value="video">Video</option>
+  </select>
+  <button onclick="generateContent()">Generate</button>
+  <div id="result"></div>
+
+  <script>
+    async function generateContent() {
+      const prompt = document.getElementById('prompt').value;
+      const type = document.getElementById('type').value;
+      if(!prompt) return alert('Enter a prompt, skibidi veiny ahh dih!');
+
+      const response = await fetch('/generate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({prompt, type})
+      });
+
+      const data = await response.json();
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '';
+
+      if(type === 'image' && data.image_url){
+        resultDiv.innerHTML = `<img src="${data.image_url}" alt="Generated Image" />`;
+      } else if(type === 'video' && data.video_url){
+        resultDiv.innerHTML = `<video controls><source src="${data.video_url}" type="video/mp4"></video>`;
+      } else {
+        resultDiv.innerText = 'Failed to generate content.';
+      }
+    }
+  </script>
+</body>
+</html>
